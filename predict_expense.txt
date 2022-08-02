@@ -1,0 +1,38 @@
+import pandas as pd
+
+MYdata=pd.read_csv(r"C:\Users\Ashish\Desktop\Velocity\DATA SCI BATCH\Main Notes\Flask\prediction_Expense\Income_Expense_Data.csv")
+print(MYdata)
+
+MYdata["Income"].fillna(MYdata["Income"].median(),inplace=True)
+print(MYdata)
+
+from sklearn.preprocessing import MinMaxScaler
+
+scaler=MinMaxScaler()
+scaled_data=scaler.fit_transform(MYdata)
+print(scaled_data)
+
+MYdata_scaled =pd.DataFrame(scaled_data)
+MYdata_scaled.columns=["Age","Income","Expense"]
+
+print(MYdata_scaled)
+
+feature=["Income","Age"]
+response=["Expense"]
+
+X=MYdata_scaled[feature]
+y=MYdata_scaled[response]
+
+
+
+from sklearn.model_selection import train_test_split
+X_train,X_test,y_train,y_test=train_test_split(X,y,test_size=0.25,random_state=42)
+
+
+from sklearn.linear_model import LinearRegression
+
+model=LinearRegression()
+model.fit(X_train,y_train)
+
+
+pickle.dump(model,open("model.pkl","wb"))
